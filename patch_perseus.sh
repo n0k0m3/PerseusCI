@@ -27,7 +27,6 @@ chmod +x apkeep
 # Download Azur Lane
 download_azurlane () {
     if [ ! -f "com.YoStarEN.AzurLane.xapk" ]; then
-    echo "Downloading Azur Lane"
     ./apkeep -a com.YoStarEN.AzurLane .
     fi
 }
@@ -57,4 +56,4 @@ sed -ir "s#\($oncreate\)#.method private static native init(Landroid/content/Con
 sed -ir "s#\($oncreate\)#\1\n    const-string v0, \"Perseus\"\n\n\    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V\n\n    invoke-static {p0}, Lcom/unity3d/player/UnityPlayerActivity;->init(Landroid/content/Context;)V\n#" com.YoStarEN.AzurLane/smali_classes2/com/unity3d/player/UnityPlayerActivity.smali
 
 echo "Build Patched Azur Lane apk"
-java -jar apktool.jar -q b com.YoStarEN.AzurLane -o build/com.YoStarEN.AzurLane.patched.apk
+java -jar apktool.jar -q -f b com.YoStarEN.AzurLane -o build/com.YoStarEN.AzurLane.patched.apk
