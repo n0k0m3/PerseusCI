@@ -1,5 +1,5 @@
 #!/bin/bash
-# PATH=$PATH:$ANDROID_HOME/build-tools/32.0.0/
+PATH=$PATH:$ANDROID_HOME/build-tools/32.0.0/
 for f in build/*.apk; do
     mv $f ${f%.apk}.apk.unsigned
     echo "Zipaligning $f"
