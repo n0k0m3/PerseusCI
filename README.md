@@ -8,7 +8,7 @@ This repo template will allow you to build Perseus using Github Actions. This wi
 
 ## How to setup
 1. Create a new PRIVATE repository using this repository as a template ([Guide](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)).
-2. ...
+2. Go to newly created repo Settings > Actions > General > Workflow permissions > Set Read and Write permission.
 3. Profits!
 
 ## How to build
