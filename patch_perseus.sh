@@ -27,7 +27,7 @@ chmod +x apkeep
 # Download Azur Lane
 download_azurlane () {
     if [ ! -f "com.YoStarEN.AzurLane.xapk" ]; then
-    ./apkeep -a com.YoStarEN.AzurLane .
+    ./apkeep -a com.YoStarEN.AzurLane@6.2.16 .
     fi
 }
 
