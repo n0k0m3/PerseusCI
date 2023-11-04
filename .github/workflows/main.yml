@@ -13,12 +13,12 @@ on:
           - 'KR'
           - 'TW'
 
-permissions:
-  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v3
@@ -75,9 +75,9 @@ jobs:
                     
       # Publish APK
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: "${{ github.event.inputs.region }} v${{ env.PERSEUS_VERSION }}"
+          tag: "${{ github.event.inputs.region }}-v${{ env.PERSEUS_VERSION }}"
           name: "Perseus Release ${{ github.event.inputs.region }} v${{ env.PERSEUS_VERSION }}"
-          files: |
-            build/*.apk
+          artifacts: "build/*.apk"
+          allowUpdates: true
