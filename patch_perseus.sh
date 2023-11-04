@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Check if bundle id is provided
+if [ -z "$1" ]
+then
+    echo "No bundle id provided. Usage: ./patch_perseus.sh bundle.id.com.xy"
+    exit 1
+fi
+
+# Set bundle id
+bundle_id=$1
+
 # Download apkeep
 get_artifact_download_url () {
     # Usage: get_download_url <repo_name> <artifact_name> <file_type>
@@ -26,16 +36,16 @@ chmod +x apkeep
 
 # Download Azur Lane
 download_azurlane () {
-    if [ ! -f "com.YoStarEN.AzurLane.xapk" ]; then
-    ./apkeep -a com.YoStarEN.AzurLane .
+    if [ ! -f "${bundle_id}.xapk" ]; then
+    ./apkeep -a ${bundle_id} .
     fi
 }
 
-if [ ! -f "com.YoStarEN.AzurLane.apk" ]; then
+if [ ! -f "${bundle_id}.apk" ]; then
     echo "Get Azur Lane apk"
     download_azurlane
-    unzip -o com.YoStarEN.AzurLane.xapk -d AzurLane
-    cp AzurLane/com.YoStarEN.AzurLane.apk .
+    unzip -o ${bundle_id}.xapk -d AzurLane
+    cp AzurLane/${bundle_id}.apk .
 fi
 
 # Download Perseus
@@ -45,19 +55,19 @@ if [ ! -d "Perseus" ]; then
 fi
 
 echo "Decompile Azur Lane apk"
-java -jar apktool.jar -q -f d com.YoStarEN.AzurLane.apk
+java -jar apktool.jar -q -f d ${bundle_id}.apk
 
 echo "Copy Perseus libs"
-cp -r Perseus/. com.YoStarEN.AzurLane/lib/
+cp -r Perseus/. ${bundle_id}/lib/
 
 echo "Patching Azur Lane with Perseus"
-oncreate=$(grep -n -m 1 'onCreate' com.YoStarEN.AzurLane/smali_classes2/com/unity3d/player/UnityPlayerActivity.smali | sed  's/[0-9]*\:\(.*\)/\1/')
-sed -ir "s#\($oncreate\)#.method private static native init(Landroid/content/Context;)V\n.end method\n\n\1#" com.YoStarEN.AzurLane/smali_classes2/com/unity3d/player/UnityPlayerActivity.smali
-sed -ir "s#\($oncreate\)#\1\n    const-string v0, \"Perseus\"\n\n\    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V\n\n    invoke-static {p0}, Lcom/unity3d/player/UnityPlayerActivity;->init(Landroid/content/Context;)V\n#" com.YoStarEN.AzurLane/smali_classes2/com/unity3d/player/UnityPlayerActivity.smali
+oncreate=$(grep -n -m 1 'onCreate' ${bundle_id}/smali_classes2/com/unity3d/player/UnityPlayerActivity.smali | sed  's/[0-9]*\:\(.*\)/\1/')
+sed -ir "s#\($oncreate\)#.method private static native init(Landroid/content/Context;)V\n.end method\n\n\1#" ${bundle_id}/smali_classes2/com/unity3d/player/UnityPlayerActivity.smali
+sed -ir "s#\($oncreate\)#\1\n    const-string v0, \"Perseus\"\n\n\    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V\n\n    invoke-static {p0}, Lcom/unity3d/player/UnityPlayerActivity;->init(Landroid/content/Context;)V\n#" ${bundle_id}/smali_classes2/com/unity3d/player/UnityPlayerActivity.smali
 
 echo "Build Patched Azur Lane apk"
-java -jar apktool.jar -q -f b com.YoStarEN.AzurLane -o build/com.YoStarEN.AzurLane.patched.apk
+java -jar apktool.jar -q -f b ${bundle_id} -o build/${bundle_id}.patched.apk
 
 echo "Set Github Release version"
-s=($(./apkeep -a com.YoStarEN.AzurLane -l))
+s=($(./apkeep -a ${bundle_id} -l))
 echo "PERSEUS_VERSION=$(echo ${s[-1]})" >> $GITHUB_ENV
