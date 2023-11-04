@@ -48,17 +48,11 @@ if [ ! -f "${bundle_id}.apk" ]; then
     cp AzurLane/${bundle_id}.apk .
 fi
 
-# Download Perseus
-if [ ! -d "Perseus" ]; then
-    echo "Downloading Perseus"
-    git clone https://github.com/Egoistically/Perseus
-fi
-
 echo "Decompile Azur Lane apk"
 java -jar apktool.jar -q -f d ${bundle_id}.apk
 
 echo "Copy Perseus libs"
-cp -r Perseus/. ${bundle_id}/lib/
+cp -r Perseus/src/libs/. ${bundle_id}/lib/
 
 echo "Patching Azur Lane with Perseus"
 oncreate=$(grep -n -m 1 'onCreate' ${bundle_id}/smali_classes2/com/unity3d/player/UnityPlayerActivity.smali | sed  's/[0-9]*\:\(.*\)/\1/')
