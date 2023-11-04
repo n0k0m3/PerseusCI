@@ -44,7 +44,7 @@ download_azurlane () {
 if [ ! -f "${bundle_id}.apk" ]; then
     echo "Get Azur Lane apk"
     download_azurlane
-    unzip -o ${bundle_id}.xapk -d AzurLane
+    unzip -o ${bundle_id}.xapk ${bundle_id}.apk -d AzurLane
     cp AzurLane/${bundle_id}.apk .
 fi
 
