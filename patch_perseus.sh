@@ -45,6 +45,7 @@ if [ ! -f "${bundle_id}.apk" ]; then
     echo "Get Azur Lane apk"
     download_azurlane
     unzip -o ${bundle_id}.xapk ${bundle_id}.apk -d AzurLane
+    unzip -o ${bundle_id}.xapk manifest.json -d AzurLane
     cp AzurLane/${bundle_id}.apk .
 fi
 
@@ -63,5 +64,5 @@ echo "Build Patched Azur Lane apk"
 java -jar apktool.jar -q -f b ${bundle_id} -o build/${bundle_id}.patched.apk
 
 echo "Set Github Release version"
-s=($(./apkeep -a ${bundle_id} -l))
-echo "PERSEUS_VERSION=$(echo ${s[-1]})" >> $GITHUB_ENV
+version=($(jq -r '.version_name' AzurLane/manifest.json))
+echo "PERSEUS_VERSION=$(echo ${version})" >> $GITHUB_ENV
